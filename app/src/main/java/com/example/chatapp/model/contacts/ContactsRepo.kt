@@ -7,5 +7,5 @@ import kotlinx.coroutines.flow.Flow
 interface ContactsRepo {
     suspend fun loadContactsList(): Flow<Resource<List<Contact>>>
     suspend fun isRoomChatExists(requesterUUID: String): Flow<Resource<String>>
-    suspend fun createChatRoomWithFrinde(requesterUUID: String):Flow<Resource<String>>
+    suspend fun createChatRoomWithFrinde(contactUUID: String):Flow<Resource<String>>
 }

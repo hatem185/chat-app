@@ -48,9 +48,9 @@ class ContactsViewModel @Inject constructor(private val repo: ContactsRepo) : Vi
         }
     }
 
-    fun isRoomChatWithContactExists(requsterUUID: String) {
+    fun isRoomChatExistsWith(contactUUID: String) {
         viewModelScope.launch {
-            repo.isRoomChatExists(requsterUUID).collect { result ->
+            repo.isRoomChatExists(contactUUID).collect { result ->
                 when (result) {
                     is Resource.Error -> {
                         _contactsStates.send(ContactsState(isError = result.message))
@@ -62,8 +62,9 @@ class ContactsViewModel @Inject constructor(private val repo: ContactsRepo) : Vi
                         val chatRoomUUIDResult = result.data.toString()
                         if (chatRoomUUIDResult.isNotEmpty()) {
                             chatRoomUUID = chatRoomUUIDResult
+                            Log.d("UUID", chatRoomUUIDResult)
                         } else {
-                            createChatRoomWithContact(requsterUUID)
+                            createChatRoomWithContact(contactUUID)
                         }
                     }
                 }
@@ -72,9 +73,9 @@ class ContactsViewModel @Inject constructor(private val repo: ContactsRepo) : Vi
         }
     }
 
-    private fun createChatRoomWithContact(requsterUUID: String) {
+    private fun createChatRoomWithContact(contactUUID: String) {
         viewModelScope.launch {
-            repo.createChatRoomWithFrinde(requesterUUID = requsterUUID).collect() { result ->
+            repo.createChatRoomWithFrinde(contactUUID = contactUUID).collect() { result ->
                 when (result) {
                     is Resource.Error -> {
                         _contactsStates.send(ContactsState(isError = result.message))
@@ -84,8 +85,12 @@ class ContactsViewModel @Inject constructor(private val repo: ContactsRepo) : Vi
                     }
                     is Resource.Success -> {
                         val chatRoomUUIDResult = result.data.toString()
-                        chatRoomUUID = chatRoomUUIDResult
                         Log.d("CREATED_ROOM", "The room chat is created")
+                        Log.d("UUID", chatRoomUUIDResult)
+                        if (chatRoomUUIDResult.isNotEmpty())
+                            chatRoomUUID = chatRoomUUIDResult
+                        else
+                            _contactsStates.send(ContactsState(isLoading = true))
                     }
                 }
             }

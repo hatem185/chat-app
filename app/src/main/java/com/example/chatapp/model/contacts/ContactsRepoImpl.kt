@@ -106,17 +106,17 @@ class ContactsRepoImpl(
         }
     }
 
-    override suspend fun createChatRoomWithFrinde(requesterUUID: String): Flow<Resource<String>> {
+    override suspend fun createChatRoomWithFrinde(contactUUID: String): Flow<Resource<String>> {
         return flow {
             emit(Resource.Loading())
             val userUUID = fbAuth.currentUser?.uid.toString()
             val frindeChatMeRef =
                 fbDb.getReference(FirebaseConstants.PROFILES_REFERENCE).child(userUUID).child(
                     FirebaseConstants.FRINDE_CAHTS
-                ).child(requesterUUID)
+                ).child(contactUUID)
 
             val frindeChatRequserRef =
-                fbDb.getReference(FirebaseConstants.PROFILES_REFERENCE).child(requesterUUID).child(
+                fbDb.getReference(FirebaseConstants.PROFILES_REFERENCE).child(contactUUID).child(
                     FirebaseConstants.FRINDE_CAHTS
                 ).child(userUUID)
 

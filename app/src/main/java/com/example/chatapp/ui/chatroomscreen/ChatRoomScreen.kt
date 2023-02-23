@@ -24,13 +24,12 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
-@RootNavGraph(start = true)
 @Destination
 @Composable
-fun ChatRoomScreen(nav: DestinationsNavigator,contact: Contact) {
+fun ChatRoomScreen(nav: DestinationsNavigator, contact: Contact) {
     Scaffold(
         topBar = {
-            TopChatRoomBar(Contact())
+            TopChatRoomBar(contact)
 
         },
         content = { paddingValues ->
@@ -110,7 +109,7 @@ fun ContactInfoBarItem(contact: Contact) {
         )
         Spacer(modifier = Modifier.width(8.dp))
         Column() {
-            Text(text = "Alberto Moedano", fontSize = 16.sp)
+            Text(text = contact.contactUserName, fontSize = 16.sp)
             Spacer(modifier = Modifier.height(3.dp))
             Text(text = "Online now", fontSize = 12.sp, color = Color(0xFFFF9431))
         }

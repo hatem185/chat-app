@@ -18,8 +18,8 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.example.chatapp.R
 import com.example.chatapp.model.Contact
 import com.example.chatapp.ui.destinations.ChatRoomScreenDestination
+import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-
 
 @Destination
 @Composable
@@ -35,8 +35,6 @@ fun ContactViwe(nav: DestinationsNavigator, viewModel: ContactsViewModel = hiltV
     }
 }
 
-
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ContactsList(nav: DestinationsNavigator, viewModel: ContactsViewModel) {
     val state = viewModel.contactsStates.collectAsState(initial = null)
@@ -58,9 +56,9 @@ fun ContactsList(nav: DestinationsNavigator, viewModel: ContactsViewModel) {
                         .fillMaxSize()
                         .padding(vertical = 8.dp)
                         .clickable {
-                            viewModel.isRoomChatWithContactExists(requsterUUID = contact.contactUserUUID)
-                            if (state.value?.isChatRoomExists == true) {
-                                    nav.navigate(ChatRoomScreenDestination)
+                            viewModel.isRoomChatExistsWith(contactUUID = contact.contactUserUUID)
+                            if (viewModel.chatRoomUUID.isNotEmpty()) {
+                                nav.navigate(ChatRoomScreenDestination(contact))
                             }
                         }
                 ) {
