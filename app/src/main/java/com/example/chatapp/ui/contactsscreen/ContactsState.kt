@@ -7,5 +7,4 @@ data class ContactsState(
     val isSuccess: Boolean = false,
     val isError: String? = "",
     val isChatRoomExists: Boolean = false,
-    val contactList: List<Contact> = emptyList()
 )

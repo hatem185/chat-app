@@ -28,6 +28,10 @@ class ContactsViewModel @Inject constructor(private val repo: ContactsRepo) : Vi
         loadContactsList()
     }
 
+    fun resetChatRoomUIID() {
+        chatRoomUUID = ""
+    }
+
     private fun loadContactsList() {
         viewModelScope.launch {
             repo.loadContactsList().collect() { result ->

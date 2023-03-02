@@ -70,8 +70,8 @@ fun SignUpScreen(nav: DestinationsNavigator, viewModel: SignUpViewModel = hiltVi
                 Box(
                     modifier = Modifier
                         .background(Color.White)
-                        .height(615.dp)
-                        .fillMaxWidth(), contentAlignment = Alignment.TopCenter
+                        .fillMaxSize(),
+                    contentAlignment = Alignment.TopCenter
                 ) {
                     Column(
                         modifier = Modifier
@@ -80,7 +80,7 @@ fun SignUpScreen(nav: DestinationsNavigator, viewModel: SignUpViewModel = hiltVi
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center
                     ) {
-                        Spacer(modifier = Modifier.height(70.dp))
+                        Spacer(modifier = Modifier.height(60.dp))
 
                         Text(
                             fontSize = 36.sp,
@@ -89,7 +89,7 @@ fun SignUpScreen(nav: DestinationsNavigator, viewModel: SignUpViewModel = hiltVi
                             text = "Sing Up"
                         )
 
-                        Spacer(modifier = Modifier.height(70.dp))
+                        Spacer(modifier = Modifier.height(60.dp))
                         CustomTextField(
                             textState = email,
                             placeHolderText = "Enter your e-mail",
@@ -101,7 +101,7 @@ fun SignUpScreen(nav: DestinationsNavigator, viewModel: SignUpViewModel = hiltVi
                             placeHolderText = "Enter your passwordl",
                             leadingIcon = Icons.Default.Lock
                         )
-                        Spacer(modifier = Modifier.height(145.dp))
+                        Spacer(modifier = Modifier.height(80.dp))
 
 
                         Button(

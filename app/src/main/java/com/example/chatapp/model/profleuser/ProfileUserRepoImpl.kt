@@ -96,7 +96,7 @@ class ProfileUserRepoImpl(
                 val userUUID = fbAuth.currentUser?.uid
                 val databaseReference = fbDb.getReference(PROFILES_REFERENCE)
                 val postListener =
-                    databaseReference.addValueEventListener(object : ValueEventListener {
+                    object : ValueEventListener {
                         override fun onDataChange(snapshot: DataSnapshot) {
                             val userFromFirebaseDatabase =
                                 snapshot.child(userUUID!!).child(USER_PROFILE_REFERNCE)
@@ -112,7 +112,7 @@ class ProfileUserRepoImpl(
                         override fun onCancelled(error: DatabaseError) {
                             this@callbackFlow.trySendBlocking(Resource.Error(error.message))
                         }
-                    })
+                    }
                 databaseReference.addValueEventListener(postListener)
                 awaitClose {
                     databaseReference.removeEventListener(postListener)

@@ -21,6 +21,7 @@ object FirebaseConstants {
     const val CONTACT_USER_EMAIL = "contactUserEmail"
     const val CONTACT_USER_NAME = "contactUserName"
     const val FRINDE_CAHTS = "Frindes"
+    const val CHAT_ROOM_REFRNCE = "Chat_room"
 }
 
 object FirebaeConstants {

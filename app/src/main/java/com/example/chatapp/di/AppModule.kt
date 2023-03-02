@@ -42,10 +42,11 @@ object AppModule {
     @Singleton
     fun providesContactsRepoImpl(fbAuth: FirebaseAuth, fbDb: FirebaseDatabase): ContactsRepo =
         ContactsRepoImpl(fbAuth, fbDb)
-@Provides
+
+    @Provides
     @Singleton
     fun providesChatRoomsRepoImpl(fbAuth: FirebaseAuth, fbDb: FirebaseDatabase): ChatRoomsRepo =
-    ChatRoomsRepoImpl(fbAuth, fbDb)
+        ChatRoomsRepoImpl(fbAuth, fbDb)
 
     @Provides
     @Singleton

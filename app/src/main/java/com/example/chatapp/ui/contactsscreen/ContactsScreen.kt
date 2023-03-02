@@ -4,6 +4,7 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -17,8 +18,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.example.chatapp.R
 import com.example.chatapp.model.Contact
+import com.example.chatapp.model.ContactChat
 import com.example.chatapp.ui.destinations.ChatRoomScreenDestination
-import com.ramcosta.composedestinations.annotation.RootNavGraph
+
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @Destination
@@ -47,9 +49,8 @@ fun ContactsList(nav: DestinationsNavigator, viewModel: ContactsViewModel) {
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(15.dp) //ChatScreenDestination
+                .padding(15.dp)
         ) {
-
             items(viewModel.contactList) { contact ->
                 Column(
                     modifier = Modifier
@@ -58,11 +59,20 @@ fun ContactsList(nav: DestinationsNavigator, viewModel: ContactsViewModel) {
                         .clickable {
                             viewModel.isRoomChatExistsWith(contactUUID = contact.contactUserUUID)
                             if (viewModel.chatRoomUUID.isNotEmpty()) {
-                                nav.navigate(ChatRoomScreenDestination(contact))
+                                nav.navigate(
+                                    ChatRoomScreenDestination(
+                                        ContactChat(
+                                            roomChatUIID = viewModel.chatRoomUUID,
+                                            contact = contact
+                                        )
+                                    )
+                                )
+                                viewModel.resetChatRoomUIID()
                             }
                         }
                 ) {
                     ContactItem(contact)
+                    Divider()
                 }
 
             }
@@ -74,7 +84,6 @@ fun ContactsList(nav: DestinationsNavigator, viewModel: ContactsViewModel) {
 
 @Composable
 fun ContactItem(contact: Contact) {
-
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -85,7 +94,6 @@ fun ContactItem(contact: Contact) {
             painter = painterResource(R.drawable.cat1),
             contentDescription = ""
         )
-
         Spacer(modifier = Modifier.padding(5.dp))
         Column() {
             Text(

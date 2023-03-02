@@ -4,6 +4,7 @@ import android.util.Log
 import com.example.chatapp.model.ChatMessage
 import com.example.chatapp.model.Contact
 import com.example.chatapp.util.FirebaseConstants
+import com.example.chatapp.util.FirebaseConstants.CHAT_ROOM_REFRNCE
 import com.example.chatapp.util.FirebaseConstants.CONTACTS_REFRNCE
 import com.example.chatapp.util.MessageConstants
 import com.example.chatapp.util.Resource
@@ -33,7 +34,7 @@ class ContactsRepoImpl(
                 val myUUID = fbAuth.currentUser?.uid
                 val fbDbRef = fbDb.getReference(CONTACTS_REFRNCE)
                 val contactListener =
-                    fbDbRef.addValueEventListener(object : ValueEventListener {
+                    object : ValueEventListener {
                         val contactsList = mutableSetOf<Contact>()
                         override fun onDataChange(snapshot: DataSnapshot) {
                             for (child in snapshot.children) {
@@ -53,7 +54,7 @@ class ContactsRepoImpl(
                             this@callbackFlow.trySendBlocking(Resource.Error(error.message))
                         }
 
-                    })
+                    }
                 fbDbRef.addValueEventListener(contactListener)
                 awaitClose {
                     fbDbRef.removeEventListener(contactListener)
@@ -123,7 +124,7 @@ class ContactsRepoImpl(
             val cahtRoomUUID = UUID.randomUUID().toString()
             frindeChatMeRef.setValue(cahtRoomUUID).await()
             frindeChatRequserRef.setValue(cahtRoomUUID).await()
-            val chatRooms = fbDb.getReference("Chat_room").child(cahtRoomUUID)
+            val chatRooms = fbDb.getReference(CHAT_ROOM_REFRNCE).child(cahtRoomUUID)
             chatRooms.setValue(
                 listOf(
                     ChatMessage(

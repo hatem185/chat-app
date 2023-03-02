@@ -7,45 +7,48 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.runtime.*
 import com.example.chatapp.R
 
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.chatapp.model.ChatMessage
+import com.example.chatapp.model.ContactChat
 
-import com.example.chatapp.model.Contact
-import com.example.chatapp.ui.contactsscreen.ContactsList
-import com.example.chatapp.ui.contactsscreen.ContactsViewModel
 import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @Destination
 @Composable
-fun ChatRoomScreen(nav: DestinationsNavigator, contact: Contact) {
+fun ChatRoomScreen(
+    nav: DestinationsNavigator,
+    viewModel: ChatRoomViewModel = hiltViewModel(),
+    contactChat: ContactChat
+) {
+    val state = viewModel.chatRoomState.collectAsState(initial = null)
     Scaffold(
         topBar = {
-            TopChatRoomBar(contact)
-
+            TopChatRoomBar(nav, contactChat)
         },
         content = { paddingValues ->
+            viewModel.loadContctMessagesRoom(contactChat.roomChatUIID)
             Box(modifier = Modifier.padding(paddingValues)) {
-                MessagesContent(listOf<Contact>())
+                MessagesContent(state, contactChat.contact.contactUserUUID)
             }
         },
         bottomBar = {
-            MessageSender()
+            MessageSender(contactChat.roomChatUIID, viewModel)
         }
     )
-
 }
 
 @Composable
-fun TopChatRoomBar(contact: Contact) {
+fun TopChatRoomBar(nav: DestinationsNavigator, contactChat: ContactChat) {
     TopAppBar(
         modifier = Modifier
             .fillMaxWidth()
@@ -54,13 +57,13 @@ fun TopChatRoomBar(contact: Contact) {
         navigationIcon = {
             Spacer(modifier = Modifier.width(10.dp))
             ButtonActionBar(
-                icon = R.drawable.arrow_back_ios_24,
-                onClickCallback = {},
+                icon = R.drawable.arrow_back_ios,
+                onClickCallback = { nav.popBackStack() },
                 backColor = Color(0xFFF0EFEF)
             )
         },
         title = {
-            ContactInfoBarItem(contact = contact)
+            ContactInfoBarItem(contactChat = contactChat)
         },
         actions = {
             ButtonActionBar(
@@ -100,7 +103,7 @@ fun ButtonActionBar(icon: Int, onClickCallback: () -> Unit, backColor: Color) {
 }
 
 @Composable
-fun ContactInfoBarItem(contact: Contact) {
+fun ContactInfoBarItem(contactChat: ContactChat) {
     Row() {
         Image(
             painter = painterResource(R.drawable.cat1),
@@ -109,7 +112,7 @@ fun ContactInfoBarItem(contact: Contact) {
         )
         Spacer(modifier = Modifier.width(8.dp))
         Column() {
-            Text(text = contact.contactUserName, fontSize = 16.sp)
+            Text(text = contactChat.contact.contactUserName, fontSize = 16.sp)
             Spacer(modifier = Modifier.height(3.dp))
             Text(text = "Online now", fontSize = 12.sp, color = Color(0xFFFF9431))
         }
@@ -117,25 +120,29 @@ fun ContactInfoBarItem(contact: Contact) {
 }
 
 @Composable
-fun MessagesContent(contacts: List<Contact>) {
+fun MessagesContent(state: State<ChatRoomState?>, contactUserUUID: String) {
     LazyColumn() {
-        items(count = 20) {
-            MessageItem(Arrangement.End)
-            Spacer(modifier = Modifier.height(10.dp))
-            MessageItem(Arrangement.Start)
+        state.value?.messageList?.let {
+            items(it) { message ->
+                if (message.profileUUID == contactUserUUID)
+                    MessageItem(Arrangement.Start, message)
+                else
+                    MessageItem(Arrangement.End, message)
+            }
         }
+
     }
 }
 
 @Composable
-fun MessageItem(arrang: Arrangement.Horizontal) {
+fun MessageItem(arrang: Arrangement.Horizontal, message: ChatMessage) {
     Spacer(modifier = Modifier.height(10.dp))
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = arrang
     ) {
         Text(
-            text = "aaaaffaaaaaffaaaaaffaaaaaaffaaaaaaaffaaaaa",
+            text = message.message,
             modifier = Modifier
                 .background(Color(0xFFFF9431))
                 .width(180.dp)
@@ -147,7 +154,8 @@ fun MessageItem(arrang: Arrangement.Horizontal) {
 }
 
 @Composable
-fun MessageSender() {
+fun MessageSender(roomChatUIID: String, viewModel: ChatRoomViewModel) {
+    var messageText by remember { mutableStateOf("") }
     BottomAppBar(backgroundColor = Color(0xFFF3F3F3)) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -168,12 +176,13 @@ fun MessageSender() {
             )
             Spacer(modifier = Modifier.width(15.dp))
             OutlinedTextField(
-                value = "Type somthing...",
-                onValueChange = {},
+                value = messageText,
+                onValueChange = { messageText = it },
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     focusedBorderColor = Color.Transparent,
                     unfocusedBorderColor = Color.Transparent
-                ), modifier = Modifier.weight(1f)
+                ), modifier = Modifier.weight(1f),
+                placeholder = { Text(text = "Type somthing...") }
             )
             Spacer(modifier = Modifier.width(15.dp))
             Divider(
@@ -185,7 +194,17 @@ fun MessageSender() {
             Spacer(modifier = Modifier.width(15.dp))
             ButtonActionBar(
                 icon = R.drawable.arrow_up_24,
-                onClickCallback = { /*TODO*/ },
+                onClickCallback = {
+                    if (messageText.trim().isEmpty()) return@ButtonActionBar
+                    viewModel.sendMessage(
+                        message = messageText.trim(),
+                        status = "Read",
+                        roomChatUIID = roomChatUIID
+                    ) {
+                        messageText = ""
+                    }
+
+                },
                 backColor = Color(0xFFF6F6F6)
             )
             Spacer(modifier = Modifier.width(15.dp))

@@ -71,8 +71,8 @@ fun LoginScreen(nav: DestinationsNavigator, viewModel: LoginViewMode = hiltViewM
                 Box(
                     modifier = Modifier
                         .background(Color.White)
-                        .height(615.dp)
-                        .fillMaxWidth(), contentAlignment = TopCenter
+                        .fillMaxSize(),
+                    contentAlignment = TopCenter
                 ) {
                     Column(
                         modifier = Modifier
@@ -81,7 +81,7 @@ fun LoginScreen(nav: DestinationsNavigator, viewModel: LoginViewMode = hiltViewM
                         horizontalAlignment = CenterHorizontally,
                         verticalArrangement = Arrangement.Center
                     ) {
-                        Spacer(modifier = Modifier.height(70.dp))
+                        Spacer(modifier = Modifier.height(60.dp))
                         Text(
                             fontSize = 36.sp,
                             fontWeight = FontWeight.Bold,
@@ -91,7 +91,7 @@ fun LoginScreen(nav: DestinationsNavigator, viewModel: LoginViewMode = hiltViewM
                                 .fillMaxWidth(),
                             textAlign = TextAlign.Center
                         )
-                        Spacer(modifier = Modifier.height(70.dp))
+                        Spacer(modifier = Modifier.height(60.dp))
                         CustomTextField(
                             textState = email,
                             placeHolderText = "Enter your e-mail",
@@ -109,7 +109,7 @@ fun LoginScreen(nav: DestinationsNavigator, viewModel: LoginViewMode = hiltViewM
                             color = Color(0xffff9431),
                             modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.End
                         )
-                        Spacer(modifier = Modifier.height(100.dp))
+                        Spacer(modifier = Modifier.height(80.dp))
                         Button(
                             modifier = Modifier
                                 .height(58.dp)
